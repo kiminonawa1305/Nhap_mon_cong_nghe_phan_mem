@@ -40,9 +40,26 @@ $(document).ready(() => {
         send();
     });
 
+    $("#input-message").on("keydown", event => {
+        if (!event.shiftKey && event.key === "Enter") {
+            event.preventDefault()
+            send();
+        }
+    });
+
     onChildAdded(roomChatRef, data => {
         loadMessage(userId, data.key, data.val());
     });
+
+    onChildChanged(roomChatRef, data => {
+        const id = data.val().userId + "-" + data.key;
+        if (data.val().status === STATUS_MESSAGE.REDEEM) {
+            const parent = $(`#${id}`);
+            parent.find(".message-text").addClass("redeem").text("Tin nhắn đã bị thu hồi");
+            parent.find(".message-option-icon").remove()
+            parent.find(".icon-status").remove()
+        }
+    })
 });
 
 function send() {
@@ -55,15 +72,15 @@ function send() {
     });
 }
 
-
 function getMessage(id) {
     const message = $("#input-message").val();
+    const date = new Date();
     if (!message) return null;
     return {
         userId: id,
         "message": message,
         status: STATUS_MESSAGE.SENT,
-        time: new Date().toString(),
+        time: `${date.getDate().toString().length === 1 ? "0" + date.getDate() : date.getDate()}/${date.getMonth().toString().length === 1 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1}/${date.getFullYear()}-${date.getHours()}:${date.getMinutes().toString().length === 1 ? "0" + date.getMinutes() : date.getMinutes()}`,
         list_reader: []
     }
 }
@@ -75,6 +92,7 @@ function loadMessage(userId, keyMessage, objMessage) {
     const data = objMessage.message;
     const status = objMessage.status;
     const role = userId === messageId ? ROLE.SENDER : ROLE.RECEIVER;
+    const time = objMessage.time.split("-")[1]
     const iconStatusMessage = status === STATUS_MESSAGE.SENT ? ICON_STATUS_MESSAGE.SENT :
         status === STATUS_MESSAGE.RECEIVED ? ICON_STATUS_MESSAGE.RECEIVED : ICON_STATUS_MESSAGE.READ
     const frameMessage =
@@ -85,10 +103,10 @@ function loadMessage(userId, keyMessage, objMessage) {
             ? '<i class="fa-solid fa-ellipsis-vertical message-option-icon"></i>'
             : ''}
                     <div class="message d-inline-block">
-                        <div class="message-text ${status === STATUS_MESSAGE.REDEEM ? 'redem' : ''}">${data}</div>
-                        <span class="message-time pull-right">Sun</span>
+                        <div class="message-text ${status === STATUS_MESSAGE.REDEEM ? 'redeem' : ''}">${data}</div>
+                        <span class="message-time pull-right">${time}</span>
                     </div>
-                <i class="icon-status d-block ${iconStatusMessage}"></i>
+                ${role === ROLE.SENDER && status !== STATUS_MESSAGE.REDEEM ? `<i class="icon-status d-block ${iconStatusMessage}"></i>` : ``}
             </div>
          </div>
         `
@@ -97,12 +115,32 @@ function loadMessage(userId, keyMessage, objMessage) {
     conversation.append(frameMessage);
     $('.message-body').scrollTop(conversation.height())
 
+    $(`#${id} .message-option-icon`).on("click", function (event) {
+        if ($(this).parent().prev()[0] === undefined) {
+            $(".message-option-content").remove()
+            $(this).parent().before(OPTION_MESSAGE_CONTENT);
+            eventMessageOptionItem();
+        } else $(this).parent().prev().remove()
+    });
 }
 
+const OPTION_MESSAGE_CONTENT =
+    `
+    <ul class="message-option-content">
+        <li class="option_message_item redeem">Thu hồi</li>
+        <li class="option_message_item">Xóa tin nhắn</li>
+        <li class="option_message_item">Chi tiết</li>
+    </ul>
+    `
 
-$("#input-message").on("keydown", event => {
-    if (!event.shiftKey && event.key === "Enter") {
-        event.preventDefault()
-        send();
-    }
-});
+function eventMessageOptionItem() {
+    $('.option_message_item.redeem').on('click', function (event) {
+        const id = $(this).parents('.message-content').attr("id").split("-")
+        update(child(roomChatRef, id[1]), {
+            "/message": "Tin nhắn đã bị thu hồi",
+            "/status": STATUS_MESSAGE.REDEEM
+        }).then(() => {
+            $(".message-option-content").remove()
+        })
+    });
+}

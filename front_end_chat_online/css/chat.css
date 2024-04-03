@@ -244,7 +244,7 @@ body {
     text-align: right;
     font-size: 12px;
     padding: 1%;
-    color: rgba(0, 0, 0, .4);
+    color: rgba(0, 0, 0, 0.4);
     vertical-align: baseline;
 }
 
@@ -412,10 +412,15 @@ body {
 
 .message-text {
     line-height: 1;
+    font-weight: 400;
 }
 
 .message-text.redeem {
     color: #686868;
+}
+
+.message-time{
+    color: rgb(144, 144, 144);
 }
 
 .message-status {
