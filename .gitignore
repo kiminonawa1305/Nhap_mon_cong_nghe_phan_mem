@@ -1,1 +1,5 @@
 /.idea/
+/.mvn/
+mvnw
+mvnw.cmd
+HELP.md
