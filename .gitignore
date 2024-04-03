@@ -1,0 +1,6 @@
+*/.mvn/
+*/mvnw
+*/mvnw.cmd
+*/HELP.md
+*/target
+/.idea/
