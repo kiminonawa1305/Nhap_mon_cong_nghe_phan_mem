@@ -1,9 +1,11 @@
 :root {
     --height_reply: 65px;
     --height_heading: 60px;
-    --background_reply: #dcdcdc;
-    --message-receiver: #fff;
+    --message-receiver: #ffffff;
     --message-sender: #dcf8c6;
+    --primary: #f3f3f3;
+    --secondary: #dedede;
+    --background-search: #f4f4f4;
 }
 
 html,
@@ -86,7 +88,7 @@ body {
     margin: 0;
     height: 60px;
     width: 100%;
-    background-color: #eee;
+    background-color: var(--secondary);
     z-index: 1000;
 }
 
@@ -165,7 +167,7 @@ body {
     height: 100%;
     width: 100%;
     padding: 10px;
-    background-color: #fbfbfb;
+    background-color: var(--background-search);
 }
 
 
@@ -304,7 +306,7 @@ body {
     height: 100%;
     width: 100%;
     padding: 10px;
-    background-color: #fbfbfb;
+    background-color: var(--background-search);
 }
 
 .composeBox-inner input:focus {
@@ -327,9 +329,7 @@ body {
     padding: 0;
     margin: 0;
     height: 100%;
-    /*width: 100%;*/
     border-left: 1px solid rgba(0, 0, 0, .08);
-    /*overflow-y: auto;*/
 }
 
 .message-body {
@@ -338,21 +338,20 @@ body {
 
     background-size: cover;
     overflow-y: auto;
-    border: 1px solid #f7f7f7;
     height: calc(100% - var(--height_reply) - var(--height_heading));
+    background-color: var(--primary);
 }
 
-#conversation{
-    overflow-y: auto;
+#conversation {
     gap: 10px;
+    min-height: 100%;
 }
 
-.message-sender:hover .message-option-icon{
+.message-sender:hover .message-option-icon {
     opacity: 1;
 }
 
 .message-content {
-    display: flex;
     gap: 10px;
 }
 
@@ -361,9 +360,9 @@ body {
     background: #b2b2b2;
     border-radius: 10px;
     padding-left: 0;
+    margin-bottom: 0;
     width: fit-content;
     text-align: left;
-    display: none;
 }
 
 .message-option-content > * {
@@ -380,44 +379,46 @@ body {
     max-width: 35%;
 }
 
-.message-content .message-main .message{
+.message-content .message-main .message {
     padding: 10px;
-    border-radius: 10px;
+    height: fit-content;
 }
 
 
 .message-receiver .message {
     background-color: var(--message-receiver);
+    border-radius: 10px 10px 10px 0;
 }
 
 .message-sender .message {
     background-color: var(--message-sender);
+    border-radius: 10px 10px 0 10px;
 }
 
-.message-receiver{
+.message-receiver {
     text-align: left;
 }
 
-.message-sender{
+.message-sender {
     text-align: right;
     justify-content: end;
 }
 
-.message-option-icon{
+.message-option-icon {
     opacity: 0;
     cursor: pointer;
-    position: relative;
+    font-size: 20px;
 }
 
-.message-text{
+.message-text {
     line-height: 1;
 }
 
-.message-text.redeem{
+.message-text.redeem {
     color: #686868;
 }
 
-.message-status{
+.message-status {
     display: block !important;
     padding: 0 5px;
 }
@@ -427,7 +428,7 @@ body {
 .reply {
     height: var(--height_reply);
     width: 100%;
-    background-color: var(--background_reply);
+    background-color: var(--secondary);
     padding: 10px 5px 10px 5px;
     margin: 0;
     z-index: 1000;
@@ -584,9 +585,7 @@ body {
         padding: 0;
         margin: 0;
         height: 100%;
-        /*width: 100%;*/
         border-left: 1px solid rgba(0, 0, 0, .08);
-        /*overflow-y: auto;*/
     }
 
     .message-body {
