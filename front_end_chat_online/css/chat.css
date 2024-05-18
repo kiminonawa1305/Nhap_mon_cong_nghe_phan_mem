@@ -1,5 +1,5 @@
 :root {
-    --height_reply: 65px;
+    --height_reply: 70px;
     --height_heading: 60px;
     --message-receiver: #ffffff;
     --message-sender: #dcf8c6;
@@ -437,6 +437,8 @@ body {
     padding: 10px 5px 10px 5px;
     margin: 0;
     z-index: 1000;
+    display: flex;
+    align-items: center;
 }
 
 .reply-emojis {
@@ -472,20 +474,21 @@ body {
     cursor: pointer;
 }
 
-.reply-main {
-    padding: 2px 5px;
+.reply-main{
+    padding: 0 !important;
 }
 
 .reply-main textarea {
     width: 100%;
     resize: none;
     overflow: hidden;
-    padding: 9px 10px;
     outline: none;
     border: none;
     box-shadow: none;
     font-size: 17px;
-    height: 100%;
+    border-radius: 10px;
+    padding: 6px 15px;
+    height: 0;
 }
 
 .reply-main textarea:focus {
@@ -493,6 +496,7 @@ body {
     border: none;
     box-shadow: none;
 }
+
 
 @media screen and (max-width: 700px) {
     .app {

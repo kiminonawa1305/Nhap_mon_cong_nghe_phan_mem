@@ -1,28 +1,42 @@
-import {child, FirebaseDatabase, onChildAdded, ref, update} from "./firebase.config.js";
+/*
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+import {
+    getDatabase,
+    ref,
+    set,
+    child,
+    onChildAdded,
+    update,
+    onChildChanged,
+    onValue,
+} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js"
 
-const ROLE = {"SENDER": "sender", "RECEIVER": "receiver"}
 const STATUS_MESSAGE = {SENT: "SENT", RECEIVED: "RECEIVED", READ: "READ", REDEEM: "REDEEM"}
-
+const ROLE = {"SENDER": "sender", "RECEIVER": "receiver"}
 const ICON_STATUS_MESSAGE = {
     SENT: "fa-regular fa-circle-check",
     RECEIVED: "fa-solid fa-circle-check",
     READ: "fa-solid fa-book-open-reader",
 }
 
-let room_id = "room_1"
-let type = "rooms";
-const userId = "207";
-const roomChatRef = ref(FirebaseDatabase, `${type}/${room_id}`);
-$(document).ready(() => {
-    Swal.fire({
-        title: 'Loading', // Tiêu đề của thông báo
-        allowOutsideClick: false, // Ngăn người dùng đóng thông báo bằng cách nhấp ra ngoài
-        allowEscapeKey: false, // Ngăn người dùng đóng thông báo bằng cách nhấn ESC
-        didOpen: () => {
-            Swal.showLoading(); // Hiển thị biểu tượng quay loading
-        },
-    });
+const firebaseConfig = {
+    apiKey: "AIzaSyB8pBkXJ6i0sGcwY4_FyC_91zp3p4afqHo",
+    authDomain: "program-chat-online.firebaseapp.com",
+    databaseURL: "https://program-chat-online-default-rtdb.firebaseio.com",
+    projectId: "program-chat-online",
+    storageBucket: "program-chat-online.appspot.com",
+    messagingSenderId: "330494060028",
+    appId: "1:330494060028:web:2de5d6324fbad434f7be79",
+    measurementId: "G-VMVPVFNC77"
+};
 
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const room_id = "room_1"
+const roomChatRef = ref(db, `room_chats/${room_id}`);
+const userId = 207;
+$(document).ready(() => {
     $("#send-messenger").on('click', function (event) {
         send();
     });
@@ -35,48 +49,51 @@ $(document).ready(() => {
     });
 
     onChildAdded(roomChatRef, data => {
-        Swal.close()
         loadMessage(userId, data.key, data.val());
     });
-    //
-    // onChildChanged(roomChatRef, data => {
-    //     const id = data.val().userId + "-" + data.key;
-    //     if (data.val().status === STATUS_MESSAGE.REDEEM) {
-    //         const parent = $(`#${id}`);
-    //         parent.find(".message-text").addClass("redeem").text("Tin nhắn đã bị thu hồi");
-    //         parent.find(".message-option-icon").remove()
-    //         parent.find(".icon-status").remove()
-    //     }
-    // })
+
+    onChildChanged(roomChatRef, data => {
+        const id = data.val().userId + "-" + data.key;
+        if (data.val().status === STATUS_MESSAGE.REDEEM) {
+            const parent = $(`#${id}`);
+            parent.find(".message-text").addClass("redeem").text("Tin nhắn đã bị thu hồi");
+            parent.find(".message-option-icon").remove()
+            parent.find(".icon-status").remove()
+        }
+    })
 });
 
 function send() {
-    const message = $("#input-message")
+    const date = new Date();
+    const message = getMessage(userId);
     if (!message) return;
-    $.ajax({
-        url: `http://localhost:8081/api/send/${type}/${room_id}`,
-        method: "POST",
-        contentType: "application/json",
-        type: "json",
-        data: JSON.stringify({
-            message: message.val().toString(),
-            userId: userId
-        }),
-        success: (response) => {
-            message.val("")
-        },
-        error: (request, status, error) => {
-            console.log(request.responseText)
-        }
+    const key = date.getTime().toString();
+    set(child(roomChatRef, key), message).then(() => {
+        $("#input-message").val("");
     });
 }
 
+function getMessage(id) {
+    const message = $("#input-message").val();
+    const date = new Date();
+    if (!message) return null;
+    return {
+        userId: id,
+        "message": message,
+        status: STATUS_MESSAGE.SENT,
+        time: `${date.getDate().toString().length === 1 ? "0" + date.getDate() : date.getDate()}/${date.getMonth().toString().length === 1 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1}/${date.getFullYear()}-${date.getHours()}:${date.getMinutes().toString().length === 1 ? "0" + date.getMinutes() : date.getMinutes()}`,
+        list_reader: []
+    }
+}
+
+
 function loadMessage(userId, keyMessage, objMessage) {
-    const {message, status, time} = objMessage;
     const messageId = objMessage.userId;
     const id = `${messageId}-${keyMessage}`;
+    const data = objMessage.message;
+    const status = objMessage.status;
     const role = userId === messageId ? ROLE.SENDER : ROLE.RECEIVER;
-    const timeSend = time.split("-")[1]
+    const time = objMessage.time.split("-")[1]
     const iconStatusMessage = status === STATUS_MESSAGE.SENT ? ICON_STATUS_MESSAGE.SENT :
         status === STATUS_MESSAGE.RECEIVED ? ICON_STATUS_MESSAGE.RECEIVED : ICON_STATUS_MESSAGE.READ
     const frameMessage =
@@ -87,8 +104,8 @@ function loadMessage(userId, keyMessage, objMessage) {
             ? '<i class="fa-solid fa-ellipsis-vertical message-option-icon"></i>'
             : ''}
                     <div class="message d-inline-block">
-                        <div class="message-text ${status === STATUS_MESSAGE.REDEEM ? 'redeem' : ''}">${message}</div>
-                        <span class="message-time pull-right">${timeSend}</span>
+                        <div class="message-text ${status === STATUS_MESSAGE.REDEEM ? 'redeem' : ''}">${data}</div>
+                        <span class="message-time pull-right">${time}</span>
                     </div>
                 ${role === ROLE.SENDER && status !== STATUS_MESSAGE.REDEEM ? `<i class="icon-status d-block ${iconStatusMessage}"></i>` : ``}
             </div>
@@ -107,7 +124,6 @@ function loadMessage(userId, keyMessage, objMessage) {
         } else $(this).parent().prev().remove()
     });
 }
-
 
 const OPTION_MESSAGE_CONTENT =
     `
@@ -129,4 +145,4 @@ function eventMessageOptionItem() {
         })
     });
 }
-
+*/
