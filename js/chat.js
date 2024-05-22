@@ -7,11 +7,12 @@ const ICON_STATUS_MESSAGE = {
     SENT: "fa-regular fa-circle-check",
     RECEIVED: "fa-solid fa-circle-check",
     READ: "fa-solid fa-book-open-reader",
+    ERROR: "fa-sharp fa-regular fa-circle-exclamation"
 }
 
 let room_id = "room_1"
 let type = "rooms";
-const userId = "207";
+const userId = "1305";
 const roomChatRef = ref(FirebaseDatabase, `${type}/${room_id}`);
 $(document).ready(() => {
     Swal.fire({
@@ -34,11 +35,14 @@ $(document).ready(() => {
         }
     });
 
+
+    /*7. Firebase gửi thông báo đến các user nằm trong RoomChat*/
     onChildAdded(roomChatRef, data => {
         Swal.close()
         loadMessage(userId, data.key, data.val());
     });
 
+    /*7. Firebase gửi thông báo đến các user nằm trong RoomChat*/
     onChildChanged(roomChatRef, data => {
         const id = data.val().userId + "-" + data.key;
         if (data.val().status === STATUS_MESSAGE.REDEEM) {
@@ -48,10 +52,17 @@ $(document).ready(() => {
             parent.find(".icon-status").remove()
         }
     })
+
+    setTimeout(() => {
+        Swal.close()
+    }, 2000);
 });
 
+/*4. Hệ thống gửi message kèm userId lên MessageController*/
 function send() {
     const message = $("#input-message")
+    const data = message.val().toString();
+    message.val("")
     if (!message) return;
     $.ajax({
         url: `http://localhost:8081/api/send/${type}/${room_id}`,
@@ -59,18 +70,23 @@ function send() {
         contentType: "application/json",
         type: "json",
         data: JSON.stringify({
-            message: message.val().toString(),
+            message: data,
             userId: userId
         }),
         success: (response) => {
-            message.val("")
         },
         error: (request, status, error) => {
             console.log(request.responseText)
+            const date = new Date();
+            const hours = date.getHours()
+            const minutes = date.getMinutes()
+            const time = `${hours < 10 ? `0` + hours : hours}:${minutes < 10 ? `0` + minutes : minutes}`
+            loadMessageError(time, data)
         }
     });
 }
 
+/*8. Hệ thông hiển thị tin nhắn lên màng hình.*/
 function loadMessage(userId, keyMessage, objMessage) {
     const {message, status, time} = objMessage;
     const messageId = objMessage.userId;
@@ -106,6 +122,25 @@ function loadMessage(userId, keyMessage, objMessage) {
             eventMessageOptionItem();
         } else $(this).parent().prev().remove()
     });
+}
+
+const loadMessageError = (timeSend, message) => {
+    const frameMessage =
+        `
+         <div class="d-flex message-content message-${ROLE.SENDER} error">
+            <div class="message-main">
+                    <div class="message d-inline-block">
+                        <div class="message-text">${message}</div>
+                        <span class="message-time pull-right">${timeSend}</span>
+                    </div>
+                    <span class="material-symbols-outlined icon-status d-block" style="color: #da2b2b;">error</span>
+            </div>
+         </div>
+        `
+
+    const conversation = $("#conversation")
+    conversation.append(frameMessage);
+    $('.message-body').scrollTop(conversation.height())
 }
 
 
