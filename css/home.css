@@ -46,7 +46,11 @@ body .container .taskbar .feature_header .feature_login {
     padding-top: 10px;
     padding-bottom: 10px;
     font-weight: 700;
+    color: #679D93;
+    text-decoration: none;
 }
+
+
 body .container .content {
     width: 100%;
     position: relative;
@@ -161,5 +165,26 @@ body .container .content .right_side {
     left: 940px;
     top: 200px;
 }
+
+.feature_login_wrapper.feature_login {
+    cursor: pointer;
+    margin: 12px 0; /* Sử dụng margin thay vì chiều cao cứng */
+    padding: 10px 30px; /* Sử dụng padding một cách hợp lý */
+    text-align: center;
+    background-color: #FFFFFF;
+    border: 1px solid #FFFFFF; /* Thay vì border trắng, bạn có thể chọn một màu khác phù hợp */
+    border-radius: 10px;
+    font-weight: 700;
+    color: #679D93;
+    text-decoration: none;
+}
+.feature_login_wrapper {
+    text-decoration: none; /* Loại bỏ gạch chân cho liên kết */
+}
+
+.feature_login {
+    text-decoration: none; /* Loại bỏ gạch chân cho nội dung bên trong */
+}
+
 
 /*# sourceMappingURL=style.css.map */

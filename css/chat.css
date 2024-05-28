@@ -417,10 +417,12 @@ body {
 
 .message-text.redeem {
     color: #686868;
+    transform: skewX(-10deg); /* Làm chữ nghiêng qua trái */
 }
 
 .message-time{
     color: rgb(144, 144, 144);
+    font-size: 12px;
 }
 
 .message-status {
