@@ -1,0 +1,196 @@
+body {
+    background-color: #A3DAD0;
+    font-family: "Open Sans", sans-serif;
+    color: #679D93;
+    font-weight: 200;
+}
+body .container {
+    margin-left: 150px;
+    margin-right: 150px;
+}
+body .container .taskbar {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+body .container .taskbar .web_name {
+    margin-top: 10px;
+    cursor: pointer;
+}
+body .container .taskbar .web_name .name {
+    font-size: 30px;
+    margin-top: 0px;
+}
+body .container .taskbar .web_name h1 {
+    margin-top: 0px;
+}
+body .container .taskbar .feature_header {
+    display: flex;
+}
+body .container .taskbar .feature_header .feature_contact, body .container .taskbar .feature_header .feature_login, body .container .taskbar .feature_header .feature_service, body .container .taskbar .feature_header .feature_feature {
+    cursor: pointer;
+    margin-top: 26px;
+    margin-left: 100px;
+}
+body .container .taskbar .feature_header .feature_login {
+    cursor: pointer;
+    margin-top: 12px;
+    padding-left: 30px;
+    padding-right: 30px;
+    text-align: center;
+    align-content: center;
+    height: 20px;
+    background-color: #FFFFFF;
+    border: #FFFFFF 1px solid;
+    border-radius: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    font-weight: 700;
+    color: #679D93;
+    text-decoration: none;
+}
+
+
+body .container .content {
+    width: 100%;
+    position: relative;
+    display: flex;
+}
+body .container .content .left_side {
+    margin-top: 160px;
+    width: 50%;
+}
+body .container .content .left_side .big_slogan {
+    font-size: 50px;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+body .container .content .left_side .small_slogan {
+    margin-top: 60px;
+}
+body .container .content .right_side {
+    margin-top: 20px;
+    margin-left: 80px;
+    width: 50%;
+}
+
+.up_side {
+    margin-top: 0px;
+    display: flex;
+}
+.up_side .content_message {
+    margin-top: 80px;
+    margin-left: 20px;
+}
+.up_side .content_message .row1, .up_side .content_message .row2 {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.pic1, .pic2 {
+    margin-top: 0px;
+    width: 160px;
+    height: 230px;
+    border-radius: 20px;
+}
+
+.pic2 {
+    margin-top: 50px;
+    margin-left: 20px;
+}
+
+.pic1_round {
+    height: 34px;
+    width: auto;
+}
+
+.message_1, .message_2 {
+    padding: 6px;
+    border: #679D93 1px solid;
+    background-color: #679D93;
+    margin-left: 10px;
+    color: #FFFFFF;
+    border-radius: 8px;
+    font-weight: 100;
+    height: 18px;
+}
+
+.message_2 {
+    align-content: center;
+    text-align: center;
+    height: 30px;
+    width: 80px;
+}
+
+.message_downside_1 {
+    margin-left: 0px;
+    margin-right: 10px;
+    padding: 6px;
+    border: #679D93 1px solid;
+    background-color: #679D93;
+    color: #FFFFFF;
+    border-radius: 8px;
+    font-weight: 100;
+    height: 18px;
+    width: auto;
+}
+
+.down_side {
+    margin-top: 0px;
+    display: flex;
+}
+.down_side .content_message_2 {
+    margin-top: 80px;
+    margin-left: 20px;
+    display: flex;
+}
+
+.row1_downside {
+    display: flex;
+}
+
+.circle_big {
+    font-size: 12px;
+}
+
+.circle_small {
+    font-size: 6px;
+}
+
+.arrow {
+    height: 100px;
+    width: auto;
+    position: absolute;
+    left: 940px;
+    top: 200px;
+}
+
+.feature_login_wrapper.feature_login {
+    cursor: pointer;
+    margin: 12px 0; /* Sử dụng margin thay vì chiều cao cứng */
+    padding: 10px 30px; /* Sử dụng padding một cách hợp lý */
+    text-align: center;
+    background-color: #FFFFFF;
+    border: 1px solid #FFFFFF; /* Thay vì border trắng, bạn có thể chọn một màu khác phù hợp */
+    border-radius: 10px;
+    font-weight: 700;
+    color: #679D93;
+    text-decoration: none;
+}
+.feature_login_wrapper {
+    text-decoration: none; /* Loại bỏ gạch chân cho liên kết */
+}
+
+.feature_login {
+    text-decoration: none; /* Loại bỏ gạch chân cho nội dung bên trong */
+}
+.feature_login_wrapper:hover{
+    transform: scale(1.1);
+}
+.feature_contact:hover, .feature_feature:hover, .feature_service:hover{
+    color:white;
+}
+
+
+/*# sourceMappingURL=style.css.map */
