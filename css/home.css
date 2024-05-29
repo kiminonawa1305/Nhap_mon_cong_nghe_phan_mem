@@ -185,6 +185,12 @@ body .container .content .right_side {
 .feature_login {
     text-decoration: none; /* Loại bỏ gạch chân cho nội dung bên trong */
 }
+.feature_login_wrapper:hover{
+    transform: scale(1.1);
+}
+.feature_contact:hover, .feature_feature:hover, .feature_service:hover{
+    color:white;
+}
 
 
 /*# sourceMappingURL=style.css.map */

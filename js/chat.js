@@ -47,7 +47,7 @@ $(document).ready(() => {
     });
 
     /*7. Firebase gửi thông báo đến các user nằm trong RoomChat*/
-    onChildChanged(roomChatRef, data => {
+    /*onChildChanged(roomChatRef, data => {
         const id = data.val().userId + "-" + data.key;
         if (data.val().status === STATUS_MESSAGE.REDEEM) {
             const parent = $(`#${id}`);
@@ -55,7 +55,36 @@ $(document).ready(() => {
             parent.find(".message-option-icon").remove()
             parent.find(".icon-status").remove()
         }
-    })
+    })*/
+    onChildChanged(roomChatRef, data => {
+        // Xác định tin nhắn cụ thể
+        const id = data.val().userId + "-" + data.key;
+        const messageStatus = data.val().status;
+
+        // Kiểm tra xem trạng thái tin nhắn có phải là thu hồi hay không
+        if (messageStatus === STATUS_MESSAGE.REDEEM) {
+            // Lấy phần tử HTML chứa tin nhắn bằng id
+            const parent = $(`#${id}`);
+
+            // Đảm bảo phần tử HTML tồn tại trước khi thao tác
+            if (parent.length) {
+                updateMessageStatusToRedeem(parent);
+            } else {
+                console.error(`Element with ID ${id} not found.`);
+            }
+        }
+    });
+
+// Hàm cập nhật trạng thái tin nhắn thành "Tin nhắn đã bị thu hồi"
+    function updateMessageStatusToRedeem(parentElement) {
+        // Cập nhật nội dung tin nhắn và thêm lớp "redeem"
+        parentElement.find(".message-text").addClass("redeem").text("Tin nhắn đã bị thu hồi");
+
+        // Xóa các thông tin như trạng thái xem, tùy chọn tin nhắn
+        parentElement.find(".message-option-icon").remove();
+        parentElement.find(".icon-status").remove();
+    }
+
 });
 
 /*4. Hệ thống gửi message kèm userId lên MessageController*/
