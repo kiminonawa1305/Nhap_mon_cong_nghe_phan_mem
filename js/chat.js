@@ -12,22 +12,28 @@ const ICON_STATUS_MESSAGE = {
 
 let room_id = "room_1"
 let type = "rooms";
-const userId = "1305";
+let userId = window.prompt("Nhập userId", 1305);
+userId = userId ? userId : "1305";
 const roomChatRef = ref(FirebaseDatabase, `${type}/${room_id}`);
-$(document).ready(() => {
-    Swal.fire({
-        title: 'Loading', // Tiêu đề của thông báo
-        allowOutsideClick: false, // Ngăn người dùng đóng thông báo bằng cách nhấp ra ngoài
-        allowEscapeKey: false, // Ngăn người dùng đóng thông báo bằng cách nhấn ESC
-        didOpen: () => {
-            Swal.showLoading(); // Hiển thị biểu tượng quay loading
-        },
-    });
 
+Swal.fire({
+    title: 'Loading', // Tiêu đề của thông báo
+    allowOutsideClick: false, // Ngăn người dùng đóng thông báo bằng cách nhấp ra ngoài
+    allowEscapeKey: false, // Ngăn người dùng đóng thông báo bằng cách nhấn ESC
+    didOpen: () => {
+        Swal.showLoading(); // Hiển thị biểu tượng quay loading
+    },
+});
+
+$(document).ready(() => {
+    Swal.close();
+
+    /*3. Người dùng nhấn vào biểu tượng gửi*/
     $("#send-messenger").on('click', function (event) {
         send();
     });
 
+    /*3. Người dùng nhấn phím "Enter"*/
     $("#input-message").on("keydown", event => {
         if (!event.shiftKey && event.key === "Enter") {
             event.preventDefault()
@@ -35,10 +41,8 @@ $(document).ready(() => {
         }
     });
 
-
     /*7. Firebase gửi thông báo đến các user nằm trong RoomChat*/
     onChildAdded(roomChatRef, data => {
-        Swal.close()
         loadMessage(userId, data.key, data.val());
     });
 
@@ -52,10 +56,6 @@ $(document).ready(() => {
             parent.find(".icon-status").remove()
         }
     })
-
-    setTimeout(() => {
-        Swal.close()
-    }, 2000);
 });
 
 /*4. Hệ thống gửi message kèm userId lên MessageController*/
