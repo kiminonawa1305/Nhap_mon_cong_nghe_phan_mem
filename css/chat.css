@@ -355,6 +355,14 @@ body {
     gap: 10px;
 }
 
+.message-content.error .message {
+    border: 1px red solid;
+}
+
+.message-content.error .message-text {
+    color: #d71c1c;
+}
+
 .message-option-content {
     list-style: none;
     background: #b2b2b2;
@@ -395,6 +403,10 @@ body {
     border-radius: 10px 10px 0 10px;
 }
 
+.message-sender .message.error{
+    border: 1px red solid;
+}
+
 .message-receiver {
     text-align: left;
 }
@@ -413,16 +425,16 @@ body {
 .message-text {
     line-height: 1;
     font-weight: 400;
+    font-size: 20px;
 }
 
 .message-text.redeem {
     color: #686868;
-    transform: skewX(-10deg); /* Làm chữ nghiêng qua trái */
 }
 
-.message-time{
+.message-time {
     color: rgb(144, 144, 144);
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .message-status {
@@ -476,7 +488,7 @@ body {
     cursor: pointer;
 }
 
-.reply-main{
+.reply-main {
     padding: 0 !important;
 }
 

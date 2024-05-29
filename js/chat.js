@@ -12,22 +12,28 @@ const ICON_STATUS_MESSAGE = {
 
 let room_id = "room_1"
 let type = "rooms";
-const userId = "1305";
+let userId = window.prompt("Nhập userId", 1305);
+userId = userId ? userId : "1305";
 const roomChatRef = ref(FirebaseDatabase, `${type}/${room_id}`);
-$(document).ready(() => {
-    Swal.fire({
-        title: 'Loading', // Tiêu đề của thông báo
-        allowOutsideClick: false, // Ngăn người dùng đóng thông báo bằng cách nhấp ra ngoài
-        allowEscapeKey: false, // Ngăn người dùng đóng thông báo bằng cách nhấn ESC
-        didOpen: () => {
-            Swal.showLoading(); // Hiển thị biểu tượng quay loading
-        },
-    });
 
+Swal.fire({
+    title: 'Loading', // Tiêu đề của thông báo
+    allowOutsideClick: false, // Ngăn người dùng đóng thông báo bằng cách nhấp ra ngoài
+    allowEscapeKey: false, // Ngăn người dùng đóng thông báo bằng cách nhấn ESC
+    didOpen: () => {
+        Swal.showLoading(); // Hiển thị biểu tượng quay loading
+    },
+});
+
+$(document).ready(() => {
+    Swal.close();
+
+    /*3. Người dùng nhấn vào biểu tượng gửi*/
     $("#send-messenger").on('click', function (event) {
         send();
     });
 
+    /*3. Người dùng nhấn phím "Enter"*/
     $("#input-message").on("keydown", event => {
         if (!event.shiftKey && event.key === "Enter") {
             event.preventDefault()
@@ -35,60 +41,21 @@ $(document).ready(() => {
         }
     });
 
-
     /*7. Firebase gửi thông báo đến các user nằm trong RoomChat*/
     onChildAdded(roomChatRef, data => {
-        Swal.close()
         loadMessage(userId, data.key, data.val());
     });
 
     /*7. Firebase gửi thông báo đến các user nằm trong RoomChat*/
-    /*onChildChanged(roomChatRef, data => {
-        //Xác định tin nhắn cụ thể
+    onChildChanged(roomChatRef, data => {
         const id = data.val().userId + "-" + data.key;
-        //Kiểm tra xem trạng thái tin nhắn có phải là thu hồi hay không
         if (data.val().status === STATUS_MESSAGE.REDEEM) {
-            //Lấy phần tử HTML chứa tin nhắn bằng id
             const parent = $(`#${id}`);
             parent.find(".message-text").addClass("redeem").text("Tin nhắn đã bị thu hồi");
-            //Xoa cac thong tin như la trạng thái xem, tùy chọn tin nhắn
             parent.find(".message-option-icon").remove()
             parent.find(".icon-status").remove()
         }
-    })*/
-    onChildChanged(roomChatRef, data => {
-        // Xác định tin nhắn cụ thể
-        const id = data.val().userId + "-" + data.key;
-        const messageStatus = data.val().status;
-
-        // Kiểm tra xem trạng thái tin nhắn có phải là thu hồi hay không
-        if (messageStatus === STATUS_MESSAGE.REDEEM) {
-            // Lấy phần tử HTML chứa tin nhắn bằng id
-            const parent = $(`#${id}`);
-
-            // Đảm bảo phần tử HTML tồn tại trước khi thao tác
-            if (parent.length) {
-                updateMessageStatusToRedeem(parent);
-            } else {
-                console.error(`Element with ID ${id} not found.`);
-            }
-        }
-    });
-
-// Hàm cập nhật trạng thái tin nhắn thành "Tin nhắn đã bị thu hồi"
-    function updateMessageStatusToRedeem(parentElement) {
-        // Cập nhật nội dung tin nhắn và thêm lớp "redeem"
-        parentElement.find(".message-text").addClass("redeem").text("Tin nhắn đã bị thu hồi");
-
-        // Xóa các thông tin như trạng thái xem, tùy chọn tin nhắn
-        parentElement.find(".message-option-icon").remove();
-        parentElement.find(".icon-status").remove();
-    }
-
-
-    setTimeout(() => {
-        Swal.close()
-    }, 2000);
+    })
 });
 
 /*4. Hệ thống gửi message kèm userId lên MessageController*/
@@ -187,20 +154,13 @@ const OPTION_MESSAGE_CONTENT =
     `
 
 function eventMessageOptionItem() {
-    //Class option_message_item.redeem khi được click sẽ thực hiện nhiệm vụ  lấy id của tin nhắn cần xóa
     $('.option_message_item.redeem').on('click', function (event) {
         const id = $(this).parents('.message-content').attr("id").split("-")
-        /*
-        *  Sử dụng phương thức update để cập nhật nội dung và trạng thái của tin nhắn trong Firebase
-        * thành Tin nhắn đã bị thu hồi và trạng thái là STATUS_MESSAGE.REDEEM.
-        * */
         update(child(roomChatRef, id[1]), {
             "/message": "Tin nhắn đã bị thu hồi",
             "/status": STATUS_MESSAGE.REDEEM
         }).then(() => {
-            //Xóa menu tùy chọn sau khi người dùng chọn chức năng xóa tin nhắn
             $(".message-option-content").remove()
         })
     });
 }
-
